@@ -1,0 +1,9 @@
+
+### O que é jenkins
+Jenkins is an open source automation server. It helps automate the parts of software development related to building, testing, and deploying, facilitating continuous integration, and continuous delivery. It is a server-based system that runs in servlet containers such as Apache Tomcat, or by default as a stand-alone web-application in co-bundled Eclipse Jetty. It supports version control tools, including AccuRev, CVS, Subversion, Git, Mercurial, Perforce, ClearCase, and RTC, and can execute Apache Ant, Apache Maven, and sbt based projects as well as arbitrary shell scripts and Windows batch commands.
+
+
+### Sources
+https://www.jenkins.io/doc/tutorials/
+https://en.wikipedia.org/wiki/Jenkins_(software)
+https://www.jenkins.io/doc/tutorials/build-a-node-js-and-react-app-with-npm/

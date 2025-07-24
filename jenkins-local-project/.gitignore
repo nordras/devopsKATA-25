@@ -1,0 +1,63 @@
+# Java
+target/
+*.jar
+*.war
+*.ear
+*.class
+.mtj.tmp/
+hs_err_pid*
+
+# Maven
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.eclipse/
+.metadata/
+
+# Node.js / React
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/coverage/
+
+# Docker
+.docker/
+
+# Jenkins
+jenkins_home/
+
+# OS
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+
+# Logs
+*.log
+logs/
+
+# Runtime
+.env
+.env.local
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporary files
+*.swp
+*.swo
+*~

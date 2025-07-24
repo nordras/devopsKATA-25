@@ -1,0 +1,13 @@
+# Dockerfile para o backend Java
+FROM openjdk:11-jre-slim
+
+WORKDIR /app
+
+# Copiar o JAR compilado
+COPY backend/target/*.jar app.jar
+
+# Expor a porta
+EXPOSE 8080
+
+# Comando para executar a aplicação
+CMD ["java", "-jar", "app.jar"]

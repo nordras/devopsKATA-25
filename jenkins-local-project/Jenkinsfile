@@ -1,0 +1,169 @@
+pipeline {
+    agent any
+    
+    tools {
+        nodejs 'NodeJS' // Configurar no Jenkins: Manage Jenkins > Global Tool Configuration
+        maven 'Maven'   // Configurar no Jenkins: Manage Jenkins > Global Tool Configuration
+    }
+    
+    environment {
+        BUILD_NUMBER = "${env.BUILD_NUMBER}"
+        BUILD_ID = "${env.BUILD_ID}"
+        JOB_NAME = "${env.JOB_NAME}"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo '📥 Fazendo checkout do código...'
+                checkout scm
+            }
+        }
+        
+        stage('Backend - Build & Test') {
+            steps {
+                echo '☕ Building Java backend...'
+                script {
+                    if (isUnix()) {
+                        sh 'mvn clean compile'
+                    } else {
+                        bat 'mvn clean compile'
+                    }
+                }
+                
+                echo '🧪 Running Java tests...'
+                script {
+                    if (isUnix()) {
+                        sh 'mvn test'
+                    } else {
+                        bat 'mvn test'
+                    }
+                }
+            }
+            post {
+                always {
+                    // Publicar resultados dos testes Java
+                    publishTestResults testResultsPattern: 'target/surefire-reports/*.xml'
+                    publishHTML([
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'target/site/jacoco',
+                        reportFiles: 'index.html',
+                        reportName: 'Java Coverage Report'
+                    ])
+                }
+            }
+        }
+        
+        stage('Frontend - Setup & Build') {
+            steps {
+                dir('frontend') {
+                    echo '⚛️ Installing React dependencies...'
+                    script {
+                        if (isUnix()) {
+                            sh 'npm ci'
+                        } else {
+                            bat 'npm ci'
+                        }
+                    }
+                    
+                    echo '🧪 Running React tests...'
+                    script {
+                        if (isUnix()) {
+                            sh 'npm test -- --coverage --watchAll=false'
+                        } else {
+                            bat 'npm test -- --coverage --watchAll=false'
+                        }
+                    }
+                    
+                    echo '📦 Building React application...'
+                    script {
+                        if (isUnix()) {
+                            sh 'npm run build'
+                        } else {
+                            bat 'npm run build'
+                        }
+                    }
+                }
+            }
+            post {
+                always {
+                    // Publicar resultados dos testes React
+                    publishHTML([
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'frontend/coverage/lcov-report',
+                        reportFiles: 'index.html',
+                        reportName: 'React Coverage Report'
+                    ])
+                }
+            }
+        }
+        
+        stage('Package') {
+            steps {
+                echo '📦 Packaging application...'
+                script {
+                    if (isUnix()) {
+                        sh 'mvn package -DskipTests'
+                    } else {
+                        bat 'mvn package -DskipTests'
+                    }
+                }
+            }
+        }
+        
+        stage('Quality Gate') {
+            steps {
+                echo '🔍 Running quality checks...'
+                script {
+                    // Lint do frontend
+                    dir('frontend') {
+                        if (isUnix()) {
+                            sh 'npm run lint || true'
+                        } else {
+                            bat 'npm run lint || exit 0'
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Deploy') {
+            steps {
+                echo '🚀 Deploying application...'
+                script {
+                    echo "Deploying build ${BUILD_NUMBER} of ${JOB_NAME}"
+                    echo "Backend JAR: target/*.jar"
+                    echo "Frontend Build: frontend/build/"
+                    // Aqui você adicionaria os comandos reais de deploy
+                    // Por exemplo: copiar arquivos, restart services, etc.
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            echo '🧹 Cleaning up workspace...'
+            // Arquivar artefatos
+            archiveArtifacts artifacts: 'target/*.jar,frontend/build/**/*', allowEmptyArchive: true
+            
+            // Limpar workspace se necessário
+            cleanWs()
+        }
+        success {
+            echo '✅ Pipeline completed successfully!'
+            // Notificações de sucesso (email, Slack, etc.)
+        }
+        failure {
+            echo '❌ Pipeline failed!'
+            // Notificações de falha (email, Slack, etc.)
+        }
+        unstable {
+            echo '⚠️ Pipeline completed with warnings!'
+        }
+    }
+}
