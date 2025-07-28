@@ -4,12 +4,12 @@ Objetive is to be able to deploy an application with all this tools and you need
 The pipelines in Jenkins need to run tests and fail if tests fail.
 OpenTofu need to have automated tests as well, all apps deployed need to be integrated with Grafana and Prometheus by default.
 
-* Jenkins
-* Helm
-* OpenTofu
-* Minikub or other kubernetes cluster manager
-* Prometheus
-* Grafana
+* **Jenkins** - Jenkins is an open-source automation server used to automate tasks in software development, particularly for building, testing, and deploying software.
+* **Helm** - Helm is a package manager for Kubernetes
+* **OpenTofu** - Terraform fork
+* **Minikub** or other kubernetes cluster manager - Minikube is local Kubernetes, focusing on making it easy to learn and develop for Kubernetes. All you need is Docker (or similarly compatible)
+* **Prometheus** - An open-source monitoring system with a dimensional data model, flexible query language, efficient time series database and modern alerting approach.
+* **Grafana** - Monitoring tool
 
 ### kata history 
 25 JUL 2025
