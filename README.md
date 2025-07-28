@@ -1,5 +1,16 @@
 # devopsKATA-25
 
+Objetive is to be able to deploy an application with all this tools and you need 2 clusters (or2 namespaces) one for the infra and other for the apps that will be deployed. 
+The pipelines in Jenkins need to run tests and fail if tests fail.
+OpenTofu need to have automated tests as well, all apps deployed need to be integrated with Grafana and Prometheus by default.
+
+* Jenkins
+* Helm
+* OpenTofu
+* Minikub or other kubernetes cluster manager
+* Prometheus
+* Grafana
+
 ### kata history 
 25 JUL 2025
 Run a Jenkins instance using Docker
@@ -14,5 +25,24 @@ Update Jenkins pipeline to add a new stage deploy
 
 Status 27/07
 ![alt text](docs/img01.png)
+
+Status 28/07
+Meeting summary:
+Most of the team ran Jenkins locally and was able to run the pipeline for Flask App
+Those who didn't finish will finish by Monday EOD
+Solutions are very similar
+Doubt: Should the projects (like the flask app) have a Dockerfile (besides the Jenkinsfile), since they will probably need its own image to be further deployed in k8s? @gnogueira can you help us with this question?
+
+```
+Each app (like the Flask app) should have its own Dockerfile
+The Dockerfile is responsible for building the apps container image, which is required to run it in k8s
+The Jenkinsfile handles the CI/CD pipeline (e.g build, test, deploy), but it still needs a Dockerfile to actually build the image
+So in short:
+Dockerfile -> defines how the app image is built
+Jenkinsfile -> automates the process (build, test, push, deploy)
+Kubernetes -> runs the built image
+
+check https://www.baeldung.com/ops/docker-local-images-minikube
+```
 
 deploy test2
