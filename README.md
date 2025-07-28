@@ -11,3 +11,5 @@ Make Jenkins deploy the Flask app to Minikube using Helm
 Setup minikube locally
 Create a Helm Chart for the Flask App
 Update Jenkins pipeline to add a new stage deploy
+
+deploy test
