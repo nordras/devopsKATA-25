@@ -4,15 +4,22 @@ pipeline {
     stage('Build') {
       steps {
         dir('flask-app') {
-          sh 'python --version || apt-get update && apt-get install -y python3 python3-pip'
-          sh 'pip3 install -r requirements.txt'
+          sh '''
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install --upgrade pip
+            pip install -r requirements.txt
+          '''
         }
       }
     }
     stage('Test') {
       steps {
         dir('flask-app') {
-          sh 'pytest'
+          sh '''
+            . venv/bin/activate
+            pytest
+          '''
         }
       }
     }
@@ -20,7 +27,10 @@ pipeline {
       steps {
         dir('flask-app') {
           sh 'pkill -f "flask run" || true'
-          sh 'nohup flask run --host=0.0.0.0 --port=5000 &'
+          sh '''
+            . venv/bin/activate
+            nohup flask run --host=0.0.0.0 --port=5000 &
+          '''
         }
       }
     }
