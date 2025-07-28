@@ -1,15 +1,11 @@
 pipeline {
-  agent {
-    docker {
-      image 'python:3.11'
-      args '-u root'
-    }
-  }
+  agent any
   stages {
     stage('Build') {
       steps {
         dir('flask-app') {
-          sh 'pip install -r requirements.txt'
+          sh 'python --version || apt-get update && apt-get install -y python3 python3-pip'
+          sh 'pip3 install -r requirements.txt'
         }
       }
     }
