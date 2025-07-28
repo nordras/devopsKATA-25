@@ -18,14 +18,14 @@ npm run test
 npm run build
 ```
 
+docker compose up -d
 ### 4. Suba o Jenkins localmente
 ```sh
-cd vite-app/docker
 # Se necessário, ajuste permissões da pasta jenkins_home
 # Exemplo (Linux/Mac): sudo chown -R 1000:1000 jenkins_home
 # No Windows, normalmente não é necessário
 
-docker compose up -d
+docker compose -f docker/docker-compose.yml up -d
 ```
 Acesse: http://localhost:8080
 
@@ -54,8 +54,8 @@ vite-app/
 ├── package.json
 ├── vite.config.js
 ├── Jenkinsfile
-└── docker/
-    └── docker-compose.yml
+docker/
+└── docker-compose.yml
 ```
 
 ### 9. Observações
