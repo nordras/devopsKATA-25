@@ -12,4 +12,4 @@ Setup minikube locally
 Create a Helm Chart for the Flask App
 Update Jenkins pipeline to add a new stage deploy
 
-deploy test
+deploy test1
