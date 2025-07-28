@@ -1,5 +1,10 @@
 pipeline {
-  agent any
+  agent {
+    docker {
+      image 'python:3.11'
+      args '-u root'
+    }
+  }
   stages {
     stage('Build') {
       steps {
@@ -18,9 +23,7 @@ pipeline {
     stage('Deploy') {
       steps {
         dir('flask-app') {
-          // Mata qualquer Flask rodando antes
           sh 'pkill -f "flask run" || true'
-          // Sobe o Flask em background na porta 5000
           sh 'nohup flask run --host=0.0.0.0 --port=5000 &'
         }
       }
