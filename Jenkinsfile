@@ -1,7 +1,10 @@
 pipeline {
   agent any
+  environment {
+    DOCKER_IMAGE = "nordras/flask-app:latest"
+  }
   stages {
-    stage('Build') {
+    stage('Build & Test') {
       steps {
         dir('flask-app') {
           sh '''
@@ -9,27 +12,30 @@ pipeline {
             . venv/bin/activate
             pip install --upgrade pip
             pip install -r requirements.txt
-          '''
-        }
-      }
-    }
-    stage('Test') {
-      steps {
-        dir('flask-app') {
-          sh '''
             . venv/bin/activate
             pytest
           '''
         }
       }
     }
-    stage('Deploy') {
+    stage('Docker Build & Push') {
       steps {
-        dir('flask-app') {
-          sh 'pkill -f "flask run" || true'
+        withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
+          dir('flask-app') {
+            sh '''
+              docker build -t $DOCKER_IMAGE .
+              echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
+              docker push $DOCKER_IMAGE
+            '''
+          }
+        }
+      }
+    }
+    stage('Deploy to Minikube via Helm') {
+      steps {
+        dir('flask-app-chart') {
           sh '''
-            . venv/bin/activate
-            nohup flask run --host=0.0.0.0 --port=5000 &
+            helm upgrade --install flask-app . --set image.repository=nordras/flask-app --set image.tag=latest
           '''
         }
       }

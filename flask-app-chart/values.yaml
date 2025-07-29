@@ -1,0 +1,13 @@
+replicaCount: 1
+
+image:
+  repository: nordras/flask-app
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+service:
+  type: NodePort
+  port: 5000
+
+resources: {}
+
